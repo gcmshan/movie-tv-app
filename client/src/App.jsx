@@ -296,159 +296,165 @@ function App() {
   };
 
   return (
-    <div className="apple-container">
-      {/* Header */}
-      <div className="apple-header">
-        <h1 className="apple-title">Movies & TV Series</h1>
-        <p className="apple-subtitle">Stream unlimited HD content with working Fast Servers.</p>
+    <div className="apple-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      
+      {/* 🚀 MAIN CONTENT WRAPPER */}
+      <main style={{ flex: 1 }}>
+        {/* Header */}
+        <div className="apple-header">
+          <h1 className="apple-title">Movies & TV Series</h1>
+          <p className="apple-subtitle">Stream unlimited HD content with working Fast Servers.</p>
 
-        <div style={{ display: 'flex', gap: '10px', maxWidth: '600px', margin: '0 auto' }}>
-          <button onClick={handleHomeClick} style={{ background: '#1c1c1e', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '10px 14px', borderRadius: '12px', cursor: 'pointer' }}>
-            🏠
-          </button>
+          <div style={{ display: 'flex', gap: '10px', maxWidth: '600px', margin: '0 auto' }}>
+            <button onClick={handleHomeClick} style={{ background: '#1c1c1e', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '10px 14px', borderRadius: '12px', cursor: 'pointer' }}>
+              🏠
+            </button>
 
-          {/* Search Wrapper */}
-          <div ref={searchContainerRef} style={{ flex: 1 }}>
-            <form 
-              onSubmit={(e) => { e.preventDefault(); executeSearch(query); }} 
-              className="search-box"
-              style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
-            >
-              {/* Input Wrapper */}
-              <div style={{ position: 'relative', flex: 1 }}>
-                <input
-                  type="text"
-                  placeholder="Search titles..."
-                  value={query}
-                  onChange={handleInputChange}
-                  onKeyDown={handleKeyDown}
-                  className="search-input"
-                  style={{ width: '100%', boxSizing: 'border-box' }}
-                />
+            {/* Search Wrapper */}
+            <div ref={searchContainerRef} style={{ flex: 1 }}>
+              <form 
+                onSubmit={(e) => { e.preventDefault(); executeSearch(query); }} 
+                className="search-box"
+                style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
+              >
+                {/* Input Wrapper */}
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <input
+                    type="text"
+                    placeholder="Search titles..."
+                    value={query}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                    className="search-input"
+                    style={{ width: '100%', boxSizing: 'border-box' }}
+                  />
 
-                {showSuggestions && suggestions.length > 0 && (
-                  <ul style={{ 
-                    position: 'absolute', 
-                    top: '100%', 
-                    left: '0', 
-                    width: '100%', 
-                    backgroundColor: '#1c1c1e', 
-                    borderRadius: '12px', 
-                    padding: '8px 0', 
-                    listStyle: 'none', 
-                    zIndex: 1000,
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    marginTop: '6px',
-                    maxHeight: '300px',
-                    overflowY: 'auto'
-                  }}>
-                    {suggestions.map((item, index) => (
-                      <li 
-                        key={item.id} 
-                        onClick={() => selectSuggestion(item)} 
-                        style={{ 
-                          padding: '10px 16px', 
-                          cursor: 'pointer', 
-                          backgroundColor: index === selectedIndex ? 'rgba(255,255,255,0.15)' : 'transparent', 
-                          color: '#fff',
-                          fontSize: '0.9rem',
-                          textAlign: 'left'
-                        }}
-                      >
-                        {item.title || item.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <ul style={{ 
+                      position: 'absolute', 
+                      top: '100%', 
+                      left: '0', 
+                      width: '100%', 
+                      backgroundColor: '#1c1c1e', 
+                      borderRadius: '12px', 
+                      padding: '8px 0', 
+                      listStyle: 'none', 
+                      zIndex: 1000,
+                      boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      marginTop: '6px',
+                      maxHeight: '300px',
+                      overflowY: 'auto'
+                    }}>
+                      {suggestions.map((item, index) => (
+                        <li 
+                          key={item.id} 
+                          onClick={() => selectSuggestion(item)} 
+                          style={{ 
+                            padding: '10px 16px', 
+                            cursor: 'pointer', 
+                            backgroundColor: index === selectedIndex ? 'rgba(255,255,255,0.15)' : 'transparent', 
+                            color: '#fff',
+                            fontSize: '0.9rem',
+                            textAlign: 'left'
+                          }}
+                        >
+                          {item.title || item.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <button type="submit" className="search-button" style={{ whiteSpace: 'nowrap' }}>Search</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <p style={{ textAlign: 'center', color: '#86868b', marginTop: '40px' }}>Loading content...</p>
+        ) : viewMode === 'search' ? (
+          <div style={{ marginTop: '20px' }}>
+            <h2>Search Results for "{query}"</h2>
+            <div className="movie-grid">
+              {searchResults.map((item) => (
+                <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', marginTop: '20px' }}>
+            
+            {/* 1. 🔄 CONTINUE WATCHING SECTION */}
+            {continueWatching.length > 0 && (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                  <h2 style={{ fontSize: '1.4rem', fontWeight: '600', color: '#0071e3' }}>
+                    ▶ Continue Watching
+                  </h2>
+                  <button onClick={clearContinueWatching} style={{ background: 'none', border: 'none', color: '#86868b', cursor: 'pointer', fontSize: '0.85rem' }}>
+                    Clear All
+                  </button>
+                </div>
+                <div className="movie-grid">
+                  {continueWatching.map((item) => (
+                    <MovieCard key={item.id} item={item} openPlayer={openPlayer} isContinueWatching={true} />
+                  ))}
+                </div>
               </div>
+            )}
 
-              <button type="submit" className="search-button" style={{ whiteSpace: 'nowrap' }}>Search</button>
-            </form>
-          </div>
-        </div>
-      </div>
-
-      {loading ? (
-        <p style={{ textAlign: 'center', color: '#86868b', marginTop: '40px' }}>Loading content...</p>
-      ) : viewMode === 'search' ? (
-        <div style={{ marginTop: '20px' }}>
-          <h2>Search Results for "{query}"</h2>
-          <div className="movie-grid">
-            {searchResults.map((item) => (
-              <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
-            ))}
-          </div>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', marginTop: '20px' }}>
-          
-          {/* 1. 🔄 CONTINUE WATCHING SECTION */}
-          {continueWatching.length > 0 && (
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: '600', color: '#0071e3' }}>
-                  ▶ Continue Watching
+            {/* 2. 🆕 RECENT MOVIES */}
+            {recentMovies.length > 0 && (
+              <div>
+                <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#34c759' }}>
+                  🆕 Recent Releases
                 </h2>
-                <button onClick={clearContinueWatching} style={{ background: 'none', border: 'none', color: '#86868b', cursor: 'pointer', fontSize: '0.85rem' }}>
-                  Clear All
-                </button>
+                <div className="movie-grid">
+                  {recentMovies.slice(0, visibleRecentCount).map((item) => (
+                    <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
+                  ))}
+                </div>
               </div>
-              <div className="movie-grid">
-                {continueWatching.map((item) => (
-                  <MovieCard key={item.id} item={item} openPlayer={openPlayer} isContinueWatching={true} />
-                ))}
+            )}
+
+            {/* 3. 🔥 TRENDING NOW */}
+            {trending.length > 0 && (
+              <div>
+                <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#ff9500' }}>
+                  🔥 Trending Now
+                </h2>
+                <div className="movie-grid">
+                  {trending.slice(0, visibleTrendingCount).map((item) => (
+                    <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* 2. 🆕 RECENT MOVIES */}
-          {recentMovies.length > 0 && (
-            <div>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#34c759' }}>
-                🆕 Recent Releases
-              </h2>
-              <div className="movie-grid">
-                {recentMovies.slice(0, visibleRecentCount).map((item) => (
-                  <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
-                ))}
+            {/* 4. 🎨 ANIMATION & ANIME */}
+            {animation.length > 0 && (
+              <div>
+                <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#af52de' }}>
+                  🎨 Animation & Anime
+                </h2>
+                <div className="movie-grid">
+                  {animation.slice(0, visibleAnimCount).map((item) => (
+                    <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* 3. 🔥 TRENDING NOW */}
-          {trending.length > 0 && (
-            <div>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#ff9500' }}>
-                🔥 Trending Now
-              </h2>
-              <div className="movie-grid">
-                {trending.slice(0, visibleTrendingCount).map((item) => (
-                  <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
-                ))}
-              </div>
-            </div>
-          )}
+          </div>
+        )}
+      </main>
 
-          {/* 4. 🎨 ANIMATION & ANIME */}
-          {animation.length > 0 && (
-            <div>
-              <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#af52de' }}>
-                🎨 Animation & Anime
-              </h2>
-              <div className="movie-grid">
-                {animation.slice(0, visibleAnimCount).map((item) => (
-                  <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 🎯 Adsterra Native Banner Ad (Home Page පහළින්) */}
-          <AdsterraNativeBanner />
-
-        </div>
-      )}
+      {/* 🎯 ALWAYS AT THE BOTTOM FOOTER AD SECTION */}
+      <footer style={{ marginTop: 'auto', width: '100%' }}>
+        <AdsterraNativeBanner />
+      </footer>
 
       {/* Player Modal */}
       {selectedMedia && (
