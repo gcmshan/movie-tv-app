@@ -37,6 +37,32 @@ function MovieCard({ item, openPlayer, isContinueWatching = false }) {
   );
 }
 
+// 🎯 Adsterra Native Banner Component
+function AdsterraNativeBanner() {
+  const adRef = useRef(null);
+
+  useEffect(() => {
+    if (adRef.current && !adRef.current.firstChild) {
+      const script = document.createElement('script');
+      script.src = 'https://pl31523509.profitableratecpmnetwork.com/4c10f54fc39e0e91b896cb10b0ea89c5/invoke.js';
+      script.async = true;
+      script.setAttribute('data-cfasync', 'false');
+
+      const container = document.createElement('div');
+      container.id = 'container-4c10f54fc39e0e91b896cb10b0ea89c5';
+
+      adRef.current.appendChild(script);
+      adRef.current.appendChild(container);
+    }
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0 20px 0', width: '100%', minHeight: '100px' }}>
+      <div ref={adRef} style={{ width: '100%', textAlign: 'center' }} />
+    </div>
+  );
+}
+
 function App() {
   const [query, setQuery] = useState('');
   const [viewMode, setViewMode] = useState('home');
@@ -288,7 +314,7 @@ function App() {
               className="search-box"
               style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
             >
-              {/* Input Wrapper - Dropdown එක මේ box එකේ පළලට සීමා වේ */}
+              {/* Input Wrapper */}
               <div style={{ position: 'relative', flex: 1 }}>
                 <input
                   type="text"
@@ -417,6 +443,9 @@ function App() {
               </div>
             </div>
           )}
+
+          {/* 🎯 Adsterra Native Banner Ad (Home Page පහළින්) */}
+          <AdsterraNativeBanner />
 
         </div>
       )}
