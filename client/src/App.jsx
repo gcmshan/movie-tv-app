@@ -37,28 +37,45 @@ function MovieCard({ item, openPlayer, isContinueWatching = false }) {
   );
 }
 
-// 🎯 Adsterra Native Banner Component
-function AdsterraNativeBanner() {
+// 🎯 Adsterra 160x600 Sidebar Banner Component
+function AdsterraSidebarBanner({ side }) {
   const adRef = useRef(null);
 
   useEffect(() => {
     if (adRef.current && !adRef.current.firstChild) {
-      const script = document.createElement('script');
-      script.src = 'https://pl31523509.profitableratecpmnetwork.com/4c10f54fc39e0e91b896cb10b0ea89c5/invoke.js';
-      script.async = true;
-      script.setAttribute('data-cfasync', 'false');
+      // 1. atOptions global object එක set කිරීම
+      window.atOptions = {
+        'key': '9165b790138ada8d4a0cdeac822d81ba',
+        'format': 'iframe',
+        'height': 600,
+        'width': 160,
+        'params': {}
+      };
 
-      const container = document.createElement('div');
-      container.id = 'container-4c10f54fc39e0e91b896cb10b0ea89c5';
+      // 2. invoke.js script එක dynamic ලෙස එකතු කිරීම
+      const script = document.createElement('script');
+      script.src = 'https://www.highrevenueformat.com/9165b790138ada8d4a0cdeac822d81ba/invoke.js';
+      script.async = true;
 
       adRef.current.appendChild(script);
-      adRef.current.appendChild(container);
     }
-  }, []);
+  }, [side]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0 20px 0', width: '100%', minHeight: '100px' }}>
-      <div ref={adRef} style={{ width: '100%', textAlign: 'center' }} />
+    <div 
+      className="sidebar-ad"
+      style={{ 
+        width: '160px', 
+        minWidth: '160px', 
+        padding: '20px 5px',
+        display: 'flex',
+        justifyContent: 'center',
+        position: 'sticky',
+        top: '20px',
+        height: 'fit-content'
+      }}
+    >
+      <div ref={adRef} style={{ width: '160px', height: '600px', backgroundColor: '#1c1c1e', borderRadius: '8px', overflow: 'hidden' }} />
     </div>
   );
 }
@@ -187,7 +204,6 @@ function App() {
     }
   };
 
-  // Arrow Key Navigation & Auto Input Update
   const handleKeyDown = (e) => {
     if (!showSuggestions || suggestions.length === 0) return;
 
@@ -296,10 +312,13 @@ function App() {
   };
 
   return (
-    <div className="apple-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', width: '100%', minHeight: '100vh', backgroundColor: '#000' }}>
       
-      {/* 🚀 MAIN CONTENT WRAPPER */}
-      <main style={{ flex: 1 }}>
+      {/* 👈 LEFT SIDEBAR AD */}
+      <AdsterraSidebarBanner side="left" />
+
+      {/* 🚀 MAIN CONTENT AREA (MIDDLE) */}
+      <main style={{ flex: 1, padding: '20px', minWidth: 0 }}>
         {/* Header */}
         <div className="apple-header">
           <h1 className="apple-title">Movies & TV Series</h1>
@@ -317,7 +336,6 @@ function App() {
                 className="search-box"
                 style={{ display: 'flex', gap: '8px', alignItems: 'center' }}
               >
-                {/* Input Wrapper */}
                 <div style={{ position: 'relative', flex: 1 }}>
                   <input
                     type="text"
@@ -376,7 +394,7 @@ function App() {
           <p style={{ textAlign: 'center', color: '#86868b', marginTop: '40px' }}>Loading content...</p>
         ) : viewMode === 'search' ? (
           <div style={{ marginTop: '20px' }}>
-            <h2>Search Results for "{query}"</h2>
+            2<h2>Search Results for "{query}"</h2>
             <div className="movie-grid">
               {searchResults.map((item) => (
                 <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
@@ -386,7 +404,7 @@ function App() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '40px', marginTop: '20px' }}>
             
-            {/* 1. 🔄 CONTINUE WATCHING SECTION */}
+            {/* 1. CONTINUE WATCHING */}
             {continueWatching.length > 0 && (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
@@ -405,7 +423,7 @@ function App() {
               </div>
             )}
 
-            {/* 2. 🆕 RECENT MOVIES */}
+            {/* 2. RECENT MOVIES */}
             {recentMovies.length > 0 && (
               <div>
                 <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#34c759' }}>
@@ -419,7 +437,7 @@ function App() {
               </div>
             )}
 
-            {/* 3. 🔥 TRENDING NOW */}
+            {/* 3. TRENDING NOW */}
             {trending.length > 0 && (
               <div>
                 <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#ff9500' }}>
@@ -433,7 +451,7 @@ function App() {
               </div>
             )}
 
-            {/* 4. 🎨 ANIMATION & ANIME */}
+            {/* 4. ANIMATION & ANIME */}
             {animation.length > 0 && (
               <div>
                 <h2 style={{ fontSize: '1.4rem', marginBottom: '15px', fontWeight: '600', color: '#af52de' }}>
@@ -451,14 +469,12 @@ function App() {
         )}
       </main>
 
-      {/* 🎯 ALWAYS AT THE BOTTOM FOOTER AD SECTION */}
-      <footer style={{ marginTop: 'auto', width: '100%' }}>
-        <AdsterraNativeBanner />
-      </footer>
+      {/* 👉 RIGHT SIDEBAR AD */}
+      <AdsterraSidebarBanner side="right" />
 
       {/* Player Modal */}
       {selectedMedia && (
-        <div className="modal-overlay" style={{ alignItems: 'flex-start', overflowY: 'auto', padding: '50px 20px' }}>
+        <div className="modal-overlay" style={{ alignItems: 'flex-start', overflowY: 'auto', padding: '50px 20px', zIndex: 2000 }}>
           <div style={{ maxWidth: '950px', width: '100%', margin: '0 auto', position: 'relative' }}>
             <button onClick={() => setSelectedMedia(null)} style={{ position: 'absolute', top: '-15px', right: '-10px', background: '#2c2c2e', color: '#fff', width: '38px', height: '38px', borderRadius: '50%', cursor: 'pointer', border: 'none' }}>✕</button>
 
