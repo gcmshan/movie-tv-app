@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://movie-tv-app-sass.onrender.com';
+const BACKEND_URL = 'https://movie-tv-app-sass.onrender.com/api';
 
 function MovieCard({ item, openPlayer, isContinueWatching = false }) {
   const title = item.title || item.name;
