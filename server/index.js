@@ -53,6 +53,25 @@ async function enrichWithImdb(items, mediaTypeDefault = 'movie') {
   );
 }
 
+// 🌐 SITEMAP.XML ENDPOINT (Google Search Console සඳහා)
+app.get('/sitemap.xml', (req, res) => {
+  res.header('Content-Type', 'application/xml');
+  const baseUrl = 'https://movies.cyberhomesimple.com';
+  const currentDate = new Date().toISOString().split('T')[0];
+
+  const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${baseUrl}/</loc>
+    <lastmod>${currentDate}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`;
+
+  res.send(xmlContent);
+});
+
 // 1. RECENT MOVIES
 app.get('/api/recent-movies', async (req, res) => {
   const cacheKey = 'recent_movies_v2';
