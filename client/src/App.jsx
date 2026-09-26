@@ -37,45 +37,38 @@ function MovieCard({ item, openPlayer, isContinueWatching = false }) {
   );
 }
 
-// 🎯 Adsterra 160x600 Sidebar Banner Component
+// 🎯 Safe Sidebar Iframe Ad Component
 function AdsterraSidebarBanner({ side }) {
-  const adRef = useRef(null);
-
-  useEffect(() => {
-    if (adRef.current && !adRef.current.firstChild) {
-      // 1. atOptions global object එක set කිරීම
-      window.atOptions = {
-        'key': '9165b790138ada8d4a0cdeac822d81ba',
-        'format': 'iframe',
-        'height': 600,
-        'width': 160,
-        'params': {}
-      };
-
-      // 2. invoke.js script එක dynamic ලෙස එකතු කිරීම
-      const script = document.createElement('script');
-      script.src = 'https://www.highrevenueformat.com/9165b790138ada8d4a0cdeac822d81ba/invoke.js';
-      script.async = true;
-
-      adRef.current.appendChild(script);
-    }
-  }, [side]);
+  const iframeCode = `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <style>body { margin: 0; padding: 0; overflow: hidden; background: transparent; }</style>
+      </head>
+      <body>
+        <script type="text/javascript">
+          atOptions = {
+            'key' : '9165b790138ada8d4a0cdeac822d81ba',
+            'format' : 'iframe',
+            'height' : 600,
+            'width' : 160,
+            'params' : {}
+          };
+        </script>
+        <script type="text/javascript" src="https://www.highrevenueformat.com/9165b790138ada8d4a0cdeac822d81ba/invoke.js"></script>
+      </body>
+    </html>
+  `;
 
   return (
-    <div 
-      className="sidebar-ad"
-      style={{ 
-        width: '160px', 
-        minWidth: '160px', 
-        padding: '20px 5px',
-        display: 'flex',
-        justifyContent: 'center',
-        position: 'sticky',
-        top: '20px',
-        height: 'fit-content'
-      }}
-    >
-      <div ref={adRef} style={{ width: '160px', height: '600px', backgroundColor: '#1c1c1e', borderRadius: '8px', overflow: 'hidden' }} />
+    <div className="sidebar-ad">
+      <iframe
+        title={`ad-${side}`}
+        srcDoc={iframeCode}
+        width="160"
+        height="600"
+        style={{ border: 'none', overflow: 'hidden' }}
+      />
     </div>
   );
 }
@@ -312,7 +305,7 @@ function App() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100%', minHeight: '100vh', backgroundColor: '#000' }}>
+    <div style={{ display: 'flex', width: '100%', minHeight: '100vh', backgroundColor: '#000', color: '#fff' }}>
       
       {/* 👈 LEFT SIDEBAR AD */}
       <AdsterraSidebarBanner side="left" />
@@ -320,9 +313,9 @@ function App() {
       {/* 🚀 MAIN CONTENT AREA (MIDDLE) */}
       <main style={{ flex: 1, padding: '20px', minWidth: 0 }}>
         {/* Header */}
-        <div className="apple-header">
-          <h1 className="apple-title">Movies & TV Series</h1>
-          <p className="apple-subtitle">Stream unlimited HD content with working Fast Servers.</p>
+        <div className="apple-header" style={{ textAlign: 'center', marginBottom: '30px' }}>
+          <h1 className="apple-title" style={{ fontSize: '2.5rem', fontWeight: '700', margin: '0 0 8px 0' }}>Movies & TV Series</h1>
+          <p className="apple-subtitle" style={{ color: '#86868b', fontSize: '1.1rem', margin: '0 0 20px 0' }}>Stream unlimited HD content with working Fast Servers.</p>
 
           <div style={{ display: 'flex', gap: '10px', maxWidth: '600px', margin: '0 auto' }}>
             <button onClick={handleHomeClick} style={{ background: '#1c1c1e', border: '1px solid rgba(255,255,255,0.2)', color: '#fff', padding: '10px 14px', borderRadius: '12px', cursor: 'pointer' }}>
@@ -344,7 +337,7 @@ function App() {
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     className="search-input"
-                    style={{ width: '100%', boxSizing: 'border-box' }}
+                    style={{ width: '100%', boxSizing: 'border-box', padding: '12px 16px', borderRadius: '12px', background: '#1c1c1e', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}
                   />
 
                   {showSuggestions && suggestions.length > 0 && (
@@ -384,7 +377,7 @@ function App() {
                   )}
                 </div>
 
-                <button type="submit" className="search-button" style={{ whiteSpace: 'nowrap' }}>Search</button>
+                <button type="submit" className="search-button" style={{ whiteSpace: 'nowrap', padding: '12px 20px', borderRadius: '12px', background: '#0071e3', color: '#fff', border: 'none', fontWeight: '600', cursor: 'pointer' }}>Search</button>
               </form>
             </div>
           </div>
@@ -394,7 +387,7 @@ function App() {
           <p style={{ textAlign: 'center', color: '#86868b', marginTop: '40px' }}>Loading content...</p>
         ) : viewMode === 'search' ? (
           <div style={{ marginTop: '20px' }}>
-            2<h2>Search Results for "{query}"</h2>
+            <h2>Search Results for "{query}"</h2>
             <div className="movie-grid">
               {searchResults.map((item) => (
                 <MovieCard key={item.id} item={item} openPlayer={openPlayer} />
@@ -474,9 +467,9 @@ function App() {
 
       {/* Player Modal */}
       {selectedMedia && (
-        <div className="modal-overlay" style={{ alignItems: 'flex-start', overflowY: 'auto', padding: '50px 20px', zIndex: 2000 }}>
+        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', overflowY: 'auto', padding: '50px 20px', zIndex: 2000 }}>
           <div style={{ maxWidth: '950px', width: '100%', margin: '0 auto', position: 'relative' }}>
-            <button onClick={() => setSelectedMedia(null)} style={{ position: 'absolute', top: '-15px', right: '-10px', background: '#2c2c2e', color: '#fff', width: '38px', height: '38px', borderRadius: '50%', cursor: 'pointer', border: 'none' }}>✕</button>
+            <button onClick={() => setSelectedMedia(null)} style={{ position: 'absolute', top: '-15px', right: '-10px', background: '#2c2c2e', color: '#fff', width: '38px', height: '38px', borderRadius: '50%', cursor: 'pointer', border: 'none', zIndex: 10 }}>✕</button>
 
             <div style={{ background: '#000', borderRadius: '16px', overflow: 'hidden', marginBottom: '24px' }}>
               <div style={{ padding: '14px 20px', background: '#161618', display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
