@@ -14,6 +14,11 @@ const cache = new NodeCache({ stdTTL: 86400 });
 const TMDB_API_KEY = process.env.TMDB_API_KEY || '0b9a32d27f4c52441dade736b680c9e5';
 const OMDB_API_KEY = process.env.OMDB_API_KEY || '2a1d81b9';
 
+// 🟢 ROOT ROUTE (Cron-Job සහ Health Check සඳහා)
+app.get('/', (req, res) => {
+  res.status(200).send('Server is running healthy!');
+});
+
 async function getOmdbImdbRating(imdbId, tmdbVote) {
   const defaultRating = tmdbVote ? tmdbVote.toFixed(1) : 'N/A';
   if (!imdbId) return { imdbRating: defaultRating };
